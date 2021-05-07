@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="yinQiong">
+    
+    <title>
+        
+            iOS热更新实施方案简讲 |
+        
+        YinQiong&#39; GitHub
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                YinQiong&#39; GitHub
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">iOS热更新实施方案简讲</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">yinQiong</span>
+                        
+                            <span class="author-label">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-12-21 11:32:00
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/oc-js/">oc/js</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E7%BC%96%E8%AF%91/">编译</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h1 id="iOS热更新实施方案简讲"><a href="#iOS热更新实施方案简讲" class="headerlink" title="iOS热更新实施方案简讲"></a>iOS热更新实施方案简讲</h1><p>为什么会有热修复的需求？</p>
+<ul>
+<li>线上App出现bug，但不想等待审核</li>
+<li>有新的业务急需上线</li>
+</ul>
+<p>苹果对热更新的态度一贯是“封杀到底”。所以，像 <strong>JSPath</strong> 这样的出名热更新库，已经进入了苹果审核的黑名单。但是由于OC语言的动态性，完全封杀热更新方案并不现实；让我们看看当年 <strong>JSPath</strong> 被封杀时，苹果给的邮件反馈:</p>
+<p><img src="images/20201208103554.jpg" alt="image"></p>
+<p>我们可以发现，当你使用上面标记的几个方法和 <strong>运行远程脚本</strong> 就会被苹果给拒。那要实现热修复的方案就要避开上面几个方法来实现热修复。所以我对市面上<strong>传说中还存在的热修复方案</strong>的公司进行了网络调研:</p>
+<ul>
+<li>腾讯公司曾公布的 OCS 方案，自己实现了一个虚拟器 OCSVM 作为解释器，用来解释执行自定义的字节码指令集语言 OCScript，同时提供了将 Objective-C 转成 OCScript 基于 LLVM 定制的编译器 OCS</li>
+<li>滴滴曾经想开源一个框架 - DynamicCocoa，DynamicCocoa 方案将 Objective-C 转换成 JavaScript 代码，然后下发动态执行。这样一来，原生开发者只要使用原生语言去开发调试即可，避免了使用 JavaScript 开发不畅的问题，也就解决了语言栈的问题。 可惜赶上 JSPath 的被禁风波；滴滴放弃了开源计划，只在滴滴内部使用。</li>
+<li>再调研了几个框架发现，发现基本都与上述2种方法大同小异。</li>
+</ul>
+<p>我发现想要在<strong>iOS系统中实现热修复</strong>，一般有如下3种方案:</p>
+<ol>
+<li><p><strong>JavaScriptCore 解释器方案</strong> </p>
+<p>JavaScriptCore 提供了易用的原生语言接口，配合 iOS 运行时提供的方法替换能力，出现了使用 JavaScript 语言修复线上问题的 JSPatch，以及把 JavaScriptCore 作为前端和原生桥梁的 React Native 和 Weex开发框架。这些库，让 App 具有了动态化能力。</p>
+<p>但是，对于原生开发者来说，只能解释执行 JavaScript 语言的解释器 JSPatch、React Native 等，我们用起来不是很顺手，还是更喜欢用原生语言来开发。那么，有没有办法能够解决语言栈的问题呢？</p>
+</li>
+<li><p><strong>代码转译方案</strong> </p>
+<p> 像 DynamicCocoa 框架一样, 这解决了语言栈的问题。有一个框架 <strong>OCRuner</strong>, 也是类似的。不过 OCRunner 是下发字节码来执行另一种类OC语言。</p>
+<p> 当然，语言之间的转译过程需要解决语言差异的问题，比如 Objective-C 是强类型，而 JavaScript 是弱类型，这两种语言间的差异点就很多。但，好在 JavaScriptCore 解释执行完后，还会对应到原生代码上，所以我们只要做好各种情况的规则匹配，就可以解决这个问题。</p>
+<p> 手段上，语言转译可以使用现有的成熟工具，比如类 C 语言的转译，可以使用 LLVM 套件中 Clang 提供的 LibTooling，通过重载 HandleTranslationUnit() 函数，使用 RecursiveASTVistor 来遍历 AST，获取代码的完整信息，然后转换成新语言的代码。</p>
+</li>
+<li><p><strong>自建解释器方案</strong> </p>
+<p> 类似腾讯的 OCS 方案，有一个开源的框架 <strong>OCEval</strong>, 基本满足了OC大部分语法的解释，但是还是老问题，由于开源，并且gitHub 星级还不错，不知道是否是上了苹果的黑名单。</p>
+<p> 直接使用内置的 JavaScriptCore 非常方便，但却限制了对性能的优化。比如，系统限制了第三方 App 对 JavaScriptCore JIT（即时编译）的使用。再比如 JSContext 多线程的处理也没有原生多线程处理得高效、频繁的 JavaScriptCore 和原生间的切换、内存管理方式不一致带来的风险、线程管理不一致的风险、消息转发时的解析转换效率低下等等原因，使得 JavaScriptCore 作为解释器的方案，始终无法比拟原生。</p>
+<p> 自研一个解释器的好处，就是可以最大程度地提高动态化的执行效率，能够解释执行针对 iOS 运行时特性定制的字节码指令。这套定制的指令，不光有基本运算指令，还有内存操作、地址跳转、强类型转换指令。</p>
+</li>
+</ol>
+<p>我们发现， 实现热修复需要一个基本的工具 - <strong>解释器</strong>。而因为怕被苹果盯上，自建闭源热修复库的方式是现在业界普遍的做法。</p>
+<p>不要一开始就想着自建解释器方案，虽然的确是最好的方案。但是，这工作量也是你无法估量的（你想一想你如何一个人发明英语/汉语翻译工具）。短时间内也是看不到结果的。所以下面我将演示一个轻量级的<strong>JavaScriptCore 解释器方案</strong> </p>
+<p><a href="">YQFix</a></p>
+<p>要实现热修复最基本的2个功能是必须要实现的</p>
+<ol>
+<li>在任意方法前后注入代码的能力，可能的话最好还能替换掉。</li>
+<li>调用任意类/实例方法的能力。</li>
+</ol>
+<p>第一点， 不就是AOP(面向切面编程)吗, 那 iOS 也有通过 Apple Store审核的 AOP 框架呀，即 - <a class="link"   target="_blank" rel="noopener" href="https://github.com/steipete/Aspects" >Aspects<i class="fas fa-external-link-alt"></i></a></p>
+<p>第二点， 只要把 <strong>[NSObject performSelector:…]</strong> 那一套通过 <strong>JSContext</strong> 暴露出来即可。<br>所以 YQFix库如下:</p>
+<h4 id="YQFix-h"><a href="#YQFix-h" class="headerlink" title="YQFix.h"></a>YQFix.h</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">#import &quot;Aspects.h&quot;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">@interface YQFix : NSObject&lt;AspectInfo&gt;</span><br><span class="line"></span><br><span class="line">+ (void)fixIt;</span><br><span class="line">+ (id)evalString:(NSString *)javascriptString;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></table></figure>
+
+<h4 id="YQFix-m"><a href="#YQFix-m" class="headerlink" title="YQFix.m"></a>YQFix.m</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;YQFix.h&quot;</span><br><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line">#import &lt;JavaScriptCore/JavaScriptCore.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation YQFix</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">+ (YQFix *)sharedInstance &#123;</span><br><span class="line">    static YQFix *sharedInstance = nil;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        sharedInstance = [[self alloc] init];</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return sharedInstance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (id)evalString:(NSString *)javascriptString &#123;</span><br><span class="line">    return [[self context] evaluateScript:javascriptString];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (JSContext *)context &#123;</span><br><span class="line">    static JSContext *_context;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        _context = [[JSContext alloc] init];</span><br><span class="line">        [_context setExceptionHandler:^(JSContext *context, JSValue *value) &#123;</span><br><span class="line">            NSLog(@&quot;Oops: %@&quot;, value);</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;);</span><br><span class="line">    return _context;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (id)_fixClassMethod:(BOOL)isClassMethod aspectionOptions:(AspectOptions)option instanceName:(NSString *)instanceName selectorName:(NSString *)selectorName fixImpl:(JSValue *)fixImpl &#123;</span><br><span class="line">    Class klass = NSClassFromString(instanceName);</span><br><span class="line">    if (isClassMethod) &#123;</span><br><span class="line">        klass = object_getClass(klass);</span><br><span class="line">    &#125;</span><br><span class="line">    SEL sel = NSSelectorFromString(selectorName);</span><br><span class="line">    [klass aspect_hookSelector:sel withOptions:option usingBlock:^(id&lt;AspectInfo&gt; aspectInfo)&#123;</span><br><span class="line">        </span><br><span class="line">        // 传递参数的指针地址</span><br><span class="line">        __block NSMutableArray *imps = @[].mutableCopy;</span><br><span class="line">        [aspectInfo.arguments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">    </span><br><span class="line">            NSString *fooString = [NSString stringWithFormat: @&quot;%p&quot;, obj];</span><br><span class="line">            [imps addObject:fooString];</span><br><span class="line">        &#125;];</span><br><span class="line">        </span><br><span class="line">        return [fixImpl callWithArguments:@[aspectInfo.instance, aspectInfo.originalInvocation, aspectInfo.arguments, imps]];</span><br><span class="line">        </span><br><span class="line">    &#125; error:nil];</span><br><span class="line">    </span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)setArgumentWithInvocation:(NSInvocation *)invocation params:(NSArray *)params &#123;</span><br><span class="line">    </span><br><span class="line">    [params enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">        NSDictionary *dict = (NSDictionary *)obj;</span><br><span class="line">        NSString *type = dict[@&quot;type&quot;];</span><br><span class="line">        NSString *value = dict[@&quot;value&quot;];</span><br><span class="line">        NSString *impStr = dict[@&quot;imp&quot;];</span><br><span class="line"></span><br><span class="line">        // 千万别去掉，我也不明白，去掉是会闪退的。求指针玩的好的大佬指教</span><br><span class="line">        NSUInteger myInt = [impStr integerValue];</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">        if ([type isEqualToString:@&quot;int&quot;]) &#123;</span><br><span class="line">            int int_value = [value intValue];</span><br><span class="line">            [invocation setArgument:&amp;int_value atIndex:idx + 2];</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            [invocation setArgument:&amp;obj atIndex:idx + 2];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)fixIt &#123;</span><br><span class="line">    [self context][@&quot;fixInstanceMethodBefore&quot;] = ^(NSString *instanceName, NSString *selectorName, JSValue *fixImpl) &#123;</span><br><span class="line">        [self _fixClassMethod:NO aspectionOptions:AspectPositionBefore instanceName:instanceName selectorName:selectorName fixImpl:fixImpl];</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    [self context][@&quot;fixInstanceMethodReplace&quot;] = ^(NSString *instanceName, NSString *selectorName, JSValue *fixImpl) &#123;</span><br><span class="line">        </span><br><span class="line">        [self _fixClassMethod:NO aspectionOptions:AspectPositionInstead instanceName:instanceName selectorName:selectorName fixImpl:fixImpl];</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    [self context][@&quot;fixInstanceMethodAfter&quot;] = ^(NSString *instanceName, NSString *selectorName, JSValue *fixImpl) &#123;</span><br><span class="line">        [self _fixClassMethod:NO aspectionOptions:AspectPositionAfter instanceName:instanceName selectorName:selectorName fixImpl:fixImpl];</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    [self context][@&quot;fixClassMethodBefore&quot;] = ^(NSString *instanceName, NSString *selectorName, JSValue *fixImpl) &#123;</span><br><span class="line">        [self _fixClassMethod:YES aspectionOptions:AspectPositionBefore instanceName:instanceName selectorName:selectorName fixImpl:fixImpl];</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    [self context][@&quot;fixClassMethodReplace&quot;] = ^(NSString *instanceName, NSString *selectorName, JSValue *fixImpl) &#123;</span><br><span class="line">        [self _fixClassMethod:YES aspectionOptions:AspectPositionInstead instanceName:instanceName selectorName:selectorName fixImpl:fixImpl];</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    [self context][@&quot;fixClassMethodAfter&quot;] = ^(NSString *instanceName, NSString *selectorName, JSValue *fixImpl) &#123;</span><br><span class="line">        [self _fixClassMethod:YES aspectionOptions:AspectPositionAfter instanceName:instanceName selectorName:selectorName fixImpl:fixImpl];</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    [self context][@&quot;runInvocation&quot;] = ^(NSInvocation *invocation, NSArray *objects) &#123;</span><br><span class="line">        </span><br><span class="line">        [self setArgumentWithInvocation:invocation params:objects];</span><br><span class="line">        [invocation invoke];</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // helper</span><br><span class="line">    [[self context] evaluateScript:@&quot;var console = &#123;&#125;&quot;];</span><br><span class="line">    [self context][@&quot;console&quot;][@&quot;log&quot;] = ^(id message) &#123;</span><br><span class="line">        NSLog(@&quot;Javascript log: %@&quot;,message);</span><br><span class="line">    &#125;;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在来测试一下，这个库是否能够实现热修复呢?我新建一个demo 引入 <a href="">Aspects</a> 和 <a href="">YQFix</a>,在demo的viewController控制器类 viewDidLoad 方法中，我先写下如下代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">   </span><br><span class="line">    NSArray *array = @[@&quot;a&quot;, @&quot;b&quot;, @&quot;c&quot;];</span><br><span class="line">    // 数组 越界 闪退</span><br><span class="line">    // 假如正确的参数是2，如何修复呢？</span><br><span class="line">    // [__NSArrayI objectAtIndexedSubscript: 3];</span><br><span class="line">   id value = array[3];  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码在执行到 <strong>id value = array[3]</strong> 这一句时候，由于数组越界，是会程序奔溃的。依照注释，正确的写法应该是 <strong>id value = array[2]</strong> ，value的值应该是 <strong>c</strong>。程序才能正常运行。那引用热修复<strong>YQFix</strong>后, 代码如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    // hook</span><br><span class="line">    [YQFix fixIt];</span><br><span class="line">    // js</span><br><span class="line">    NSString *fixScriptString = @&quot; \</span><br><span class="line">    fixInstanceMethodReplace(&#x27;__NSArrayI&#x27;, &#x27;objectAtIndexedSubscript:&#x27;, function(instance, originInvocation, originArguments, imps)&#123; \</span><br><span class="line">            var index = originArguments[0];\</span><br><span class="line">            if (index &gt; 2)&#123;\</span><br><span class="line">                console.log(&#x27;数组越界，欢迎来到 JSCore&#x27;);\</span><br><span class="line">                console.log(originArguments[0]);\</span><br><span class="line">                var intObject = &#123;type:&#x27;int&#x27;, value:&#x27;2&#x27;, imp: 0&#125;;\</span><br><span class="line">                runInvocation(originInvocation, [intObject]);\</span><br><span class="line">            &#125;;\</span><br><span class="line">        \</span><br><span class="line">    &#125;);\</span><br><span class="line">    &quot;;</span><br><span class="line">    // 执行js</span><br><span class="line">    [YQFix evalString:fixScriptString];</span><br><span class="line">    </span><br><span class="line">    NSArray *array = @[@&quot;a&quot;, @&quot;b&quot;, @&quot;c&quot;];</span><br><span class="line">    // 数组 越界 闪退</span><br><span class="line">    // 假如正确的参数是2，如何修复呢？</span><br><span class="line">    // [__NSArrayI objectAtIndexedSubscript: 3];</span><br><span class="line">   id value = array[3];</span><br><span class="line">    </span><br><span class="line">   NSLog(@&quot;天啦，你真的修复啦, 正确的值是‘C’吗？====&gt; %@&quot;, value);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>从代码上看， <strong>id value = array[3];</strong> 还是在，要证明被 JavaScriptCore 捕获错误，应该会打印出<strong>console.log(‘数组越界，欢迎来到 JSCore’);</strong> 这句，要证明成功修复了错误，那应该打印 <strong>NSLog(@”天啦，你真的修复啦, 正确的值是‘C’吗？====&gt; %@”, value);</strong> 这一句。运行，打印结果如下:</p>
+<p><img src="images/20201209170506.jpg" alt="image"></p>
+<p>结果是如预期的。这就是<strong>JavaScriptCore 解释器方案</strong> 基本的原理。从<a href="">YQFix</a>的代码来看，没有使用 JSPath 当年被拒邮件中提到的任何一句代码。当然正如 上文提到的 <strong>语言之间的转译过程需要解决语言差异的问题</strong>，<a href="">YQFix</a>照样存在, 如果对 clang 有研究，可以利用 clang 来，如果没有，手工编辑转译也只是花时间而已。</p>
+<p>上述<a href="">YQFix</a>还有一个问题就是，这是一个单例，假如说，你遇到了2个同种类型同一个方法的奔溃，但是参数之类的都不一样。这个时候你是很难区分谁是谁， 所以我建议不用单例来做这框架，推荐每一个控制器 有一个负责 热修复的类。</p>
+<p>一般实际的开发过程中，突然接到一个小需求, 让你赶紧上代码这是很常见的。这就是在热修复更上一层的技术 - <strong>动态化</strong>，但是以<a href="">YQFix</a>上述代码你是做不到动态化的。<br>所以，在 <a href="">YQFix</a>中，我添加了几个方法:</p>
+<p><strong>YQFix.m</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">+ (id)_fixClassMethod:(BOOL)isClassMethod aspectionOptions:(AspectOptions)option instanceName:(NSString *)instanceName selectorName:(NSString *)selectorName fixImpl:(JSValue *)fixImpl &#123;</span><br><span class="line">    Class klass = NSClassFromString(instanceName);</span><br><span class="line">    if (isClassMethod) &#123;</span><br><span class="line">        klass = object_getClass(klass);</span><br><span class="line">    &#125;</span><br><span class="line">    SEL sel = NSSelectorFromString(selectorName);</span><br><span class="line">    [klass aspect_hookSelector:sel withOptions:option usingBlock:^(id&lt;AspectInfo&gt; aspectInfo)&#123;</span><br><span class="line">        </span><br><span class="line">        // 传递参数的指针地址</span><br><span class="line">        __block NSMutableArray *imps = @[].mutableCopy;</span><br><span class="line">        [aspectInfo.arguments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">    </span><br><span class="line">            NSString *fooString = [NSString stringWithFormat: @&quot;%p&quot;, obj];</span><br><span class="line">            [imps addObject:fooString];</span><br><span class="line">        &#125;];</span><br><span class="line">        </span><br><span class="line">        return [fixImpl callWithArguments:@[aspectInfo.instance, aspectInfo.originalInvocation, aspectInfo.arguments, imps]];</span><br><span class="line">        </span><br><span class="line">    &#125; error:nil];</span><br><span class="line">    </span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - 执行某一个类某一个方法</span><br><span class="line">+ (id)_runClassWithClassName:(NSString *)className selector:(NSString *)selector objects:(NSArray *)objects &#123;</span><br><span class="line">    Class cls = NSClassFromString(className);</span><br><span class="line">    SEL action = NSSelectorFromString(selector);</span><br><span class="line">    return [self performTarget:cls action:action params:objects];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (id)_runInstanceWithInstance:(id)instance selector:(NSString *)selector objects:(NSArray *)objects &#123;</span><br><span class="line">    SEL action = NSSelectorFromString(selector);</span><br><span class="line">    return [self performTarget:instance action:action params:objects];</span><br><span class="line">&#125;</span><br><span class="line">+ (id)performTarget:(id)target action:(SEL)action params:(NSArray *)params &#123;</span><br><span class="line">    NSMethodSignature* methodSig = [target methodSignatureForSelector:action];</span><br><span class="line">    if(methodSig == nil) &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    const char* retType = [methodSig methodReturnType];</span><br><span class="line"></span><br><span class="line">    if (strcmp(retType, @encode(void)) == 0) &#123;</span><br><span class="line">        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSig];</span><br><span class="line">        [invocation setSelector:action];</span><br><span class="line">        [invocation setTarget:target];</span><br><span class="line">        [self setArgumentWithInvocation:invocation params:params];</span><br><span class="line">        [invocation invoke];</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (strcmp(retType, @encode(NSInteger)) == 0) &#123;</span><br><span class="line">        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSig];</span><br><span class="line">        [invocation setSelector:action];</span><br><span class="line">        [invocation setTarget:target];</span><br><span class="line">        [self setArgumentWithInvocation:invocation params:params];</span><br><span class="line">        [invocation invoke];</span><br><span class="line">        NSInteger result = 0;</span><br><span class="line">        [invocation getReturnValue:&amp;result];</span><br><span class="line">        return @(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (strcmp(retType, @encode(BOOL)) == 0) &#123;</span><br><span class="line">        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSig];</span><br><span class="line">        [invocation setSelector:action];</span><br><span class="line">        [invocation setTarget:target];</span><br><span class="line">        [self setArgumentWithInvocation:invocation params:params];</span><br><span class="line">        [invocation invoke];</span><br><span class="line">        BOOL result = 0;</span><br><span class="line">        [invocation getReturnValue:&amp;result];</span><br><span class="line">        return @(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (strcmp(retType, @encode(CGFloat)) == 0) &#123;</span><br><span class="line">        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSig];</span><br><span class="line">        [invocation setSelector:action];</span><br><span class="line">        [invocation setTarget:target];</span><br><span class="line">        [self setArgumentWithInvocation:invocation params:params];</span><br><span class="line">        [invocation invoke];</span><br><span class="line">        CGFloat result = 0;</span><br><span class="line">        [invocation getReturnValue:&amp;result];</span><br><span class="line">        return @(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (strcmp(retType, @encode(NSUInteger)) == 0) &#123;</span><br><span class="line">        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSig];</span><br><span class="line">        [invocation setSelector:action];</span><br><span class="line">        [invocation setTarget:target];</span><br><span class="line">        [self setArgumentWithInvocation:invocation params:params];</span><br><span class="line">        [invocation invoke];</span><br><span class="line">        NSUInteger result = 0;</span><br><span class="line">        [invocation getReturnValue:&amp;result];</span><br><span class="line">        return @(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /// 其实有其它框架使用了下面 [target performSelector:action withObject:params] 并不会被拒</span><br><span class="line">#pragma clang diagnostic push</span><br><span class="line">#pragma clang diagnostic ignored &quot;-Warc-performSelector-leaks&quot;</span><br><span class="line">    return [target performSelector:action withObject:params];</span><br><span class="line">#pragma clang diagnostic pop</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>fix方法中，添加下面2个方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[self context][@&quot;runClassMethod&quot;] = ^id (NSString *className, NSString *selectorName, NSArray *objects) &#123;</span><br><span class="line">        return [self _runClassWithClassName:className selector:selectorName objects:objects];</span><br><span class="line">&#125;;</span><br><span class="line">    </span><br><span class="line">[self context][@&quot;runInstanceMethod&quot;] = ^id (id instance, NSString *selectorName, NSArray *objects) &#123;</span><br><span class="line">        return [self _runInstanceWithInstance:instance selector:selectorName objects:objects];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这样就有动态调用类和实例的方法了。但是不可避免的会引入 <strong>[target performSelector:action withObject:params]</strong> 这个在被拒邮件中提到的方。但是呢，现在很迷惑的在于， 有很多框架中也使用了这个方法，并不会被拒。那JSPath 当初被拒中也提到了这个方法。那被拒的判断标准就很值得耐人寻味了。</p>
+<p>所以，如果只是在项目中简单的修复bug，<a href="">YQFix</a>去掉 target performSelector:action withObject:params] 相关的函数，就是一个简单的热修复库了，但如果要动态化。就需要去试探苹果的底线。</p>
+<p>关于 <strong>JavaScriptCore 解释器方案</strong>就到这里，而<strong>代码转译方案</strong> 则是在有解释器的情况下，抹除语言栈的问题，所以就不在本文讨论了。</p>
+<p>下面直接讨论如何实现<strong>自建解释器方案</strong>。<br>我们自建一个解释器，当然是能够用来解释OC语言的呀，那其实我们还是需要编译器的<strong>词法分析，语法分析，遍历，转换和代码生成</strong>等部分。</p>
+<p>编写解释器很容易，但一开始就抱着实现一门复杂语法的全部高级特性的想法，那么就会陷入目标过大的误区，或者遇到语言设计本身的问题，以至于无法完成工作。因此，实现解释器，需要从最基本的需求切入，到后面再一点点地加入更多的语言特性。只要保证每一步执行正确。写出一个功能完善的解释器就不是难事。</p>
+<p>下面将用swift实现一个OC的四则运算，进行阐述。</p>
+<p><strong>1.token</strong></p>
+<p>整个过程就是把代码切成一个又一个的token，这个token可大可小。那下面对一个四则运算（比如 8 + 3，包含了数字和运算符加号）分词的token结构进行设计，其它情况都先当作文件内容，设置为 eof 类型。</p>
+<h4 id="OCToken-swift"><a href="#OCToken-swift" class="headerlink" title="OCToken.swift"></a>OCToken.swift</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">public enum OCToken &#123;</span><br><span class="line">    case eof</span><br><span class="line">    case whiteSpaceAndNewLine  // 空格换行 </span><br><span class="line">    case constant(OCConstant)   // int float string bool</span><br><span class="line">    case operation(OCOperation) // + - * /</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">/// oc的常量类型</span><br><span class="line">public enum OCConstant &#123;</span><br><span class="line">    case integer(Int)</span><br><span class="line">    case float(Float)</span><br><span class="line">    case boolean(Bool)</span><br><span class="line">    case string(String)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/// 四则运算符号</span><br><span class="line">public enum OCOperation &#123;</span><br><span class="line">    case plus   // +</span><br><span class="line">    case minus  // -</span><br><span class="line">    case mult   // *</span><br><span class="line">    case intDiv // /</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extension OCConstant: Equatable &#123;</span><br><span class="line">    public static func == (lhs: OCConstant, rhs: OCConstant) -&gt; Bool &#123;</span><br><span class="line">        switch (lhs, rhs) &#123;</span><br><span class="line">        case let (.integer(left), .integer(right)):</span><br><span class="line">            return left == right</span><br><span class="line">        case let (.float(left), .float(right)):</span><br><span class="line">            return left == right</span><br><span class="line">        case let (.boolean(left), .boolean(right)):</span><br><span class="line">            return left == right</span><br><span class="line">        case let (.string(left), .string(right)):</span><br><span class="line">            return left == right</span><br><span class="line">        default:</span><br><span class="line">            return false</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extension OCOperation: Equatable &#123;</span><br><span class="line">    public static func == (lhs: OCOperation, rhs: OCOperation) -&gt; Bool &#123;</span><br><span class="line">        switch (lhs, rhs) &#123;</span><br><span class="line">        case (.plus, .plus):</span><br><span class="line">            return true</span><br><span class="line">        case (.minus, .minus):</span><br><span class="line">            return true</span><br><span class="line">        case (.mult, .mult):</span><br><span class="line">            return true</span><br><span class="line">        case (.intDiv, .intDiv):</span><br><span class="line">            return true</span><br><span class="line">        default:</span><br><span class="line">            return false</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extension OCToken: Equatable &#123;</span><br><span class="line">    public static func == (lhs: OCToken, rhs: OCToken) -&gt; Bool &#123;</span><br><span class="line">        switch (lhs, rhs) &#123;</span><br><span class="line">        case let (.constant(left), .constant(right)):</span><br><span class="line">            return left == right</span><br><span class="line">        case let (.operation(left), .operation(right)):</span><br><span class="line">            return left == right</span><br><span class="line">        case (.eof, .eof):</span><br><span class="line">            return true</span><br><span class="line">        case (.whiteSpaceAndNewLine, .whiteSpaceAndNewLine):</span><br><span class="line">            return true</span><br><span class="line">        default:</span><br><span class="line">            return false</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2. 词法分析器</strong></p>
+<h4 id="YQLexer-swift"><a href="#YQLexer-swift" class="headerlink" title="YQLexer.swift"></a>YQLexer.swift</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line">public class YQLexer &#123;</span><br><span class="line">    </span><br><span class="line">    private let text: String</span><br><span class="line">    private var currentIndex: Int</span><br><span class="line">    private var currentCharacter: Character?</span><br><span class="line">    </span><br><span class="line">    public init(_ input: String) &#123;</span><br><span class="line">        if input.count == 0 &#123;</span><br><span class="line">            fatalError(&quot;Error! input can&#x27;t be empty&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        self.text = input</span><br><span class="line">        currentIndex = 0</span><br><span class="line">        currentCharacter = text[text.startIndex]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 流程函数</span><br><span class="line">    func nextTk() -&gt; OCToken &#123;</span><br><span class="line">        // 到文件末</span><br><span class="line">        if currentIndex &gt; self.text.count - 1 &#123;</span><br><span class="line">            return .eof</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        // 空格换行</span><br><span class="line">        if CharacterSet.whitespacesAndNewlines.contains((currentCharacter?.unicodeScalars.first!)!) &#123;</span><br><span class="line">            skipWhiteSpaceAndNewLines()</span><br><span class="line">            //return .whiteSpaceAndNewLine</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        // 数字</span><br><span class="line">        if CharacterSet.decimalDigits.contains((currentCharacter?.unicodeScalars.first!)!) &#123;</span><br><span class="line">            return number()</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        // 符号</span><br><span class="line">        if currentCharacter == &quot;+&quot; &#123;</span><br><span class="line">            advance()</span><br><span class="line">            return .operation(.plus)</span><br><span class="line">        &#125;</span><br><span class="line">        if currentCharacter == &quot;-&quot; &#123;</span><br><span class="line">            advance()</span><br><span class="line">            return .operation(.minus)</span><br><span class="line">        &#125;</span><br><span class="line">        if currentCharacter == &quot;*&quot; &#123;</span><br><span class="line">            advance()</span><br><span class="line">            return .operation(.mult)</span><br><span class="line">        &#125;</span><br><span class="line">        if currentCharacter == &quot;/&quot; &#123;</span><br><span class="line">            </span><br><span class="line">            advance()</span><br><span class="line">            return .operation(.intDiv)</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        advance()</span><br><span class="line">        return .eof</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 数字处理</span><br><span class="line">    private func number() -&gt; OCToken &#123;</span><br><span class="line">        var numStr = &quot;&quot;</span><br><span class="line">        while let character = currentCharacter,  CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) &#123;</span><br><span class="line">            numStr += String(character)</span><br><span class="line">            advance()</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        if let character = currentCharacter, character == &quot;.&quot;, peek() != &quot;.&quot; &#123;</span><br><span class="line">            numStr += &quot;.&quot;</span><br><span class="line">            advance()</span><br><span class="line">            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) &#123;</span><br><span class="line">                numStr += String(character)</span><br><span class="line">                advance()</span><br><span class="line">            &#125;</span><br><span class="line">            return .constant(.float(Float(numStr)!))</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return .constant(.integer(Int(numStr)!))</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 辅助函数 </span><br><span class="line">    private func advance() &#123;</span><br><span class="line">        currentIndex += 1</span><br><span class="line">        guard currentIndex &lt; text.count else &#123;</span><br><span class="line">            currentCharacter = nil</span><br><span class="line">            return</span><br><span class="line">        &#125;</span><br><span class="line">        currentCharacter = text[text.index(text.startIndex, offsetBy: currentIndex)]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 往前探一个字符，不改变当前字符</span><br><span class="line">    private func peek() -&gt; Character? &#123;</span><br><span class="line">        let peekIndex = currentIndex + 1</span><br><span class="line">        guard peekIndex &lt; text.count else &#123;</span><br><span class="line">            return nil</span><br><span class="line">        &#125;</span><br><span class="line">        return text[text.index(text.startIndex, offsetBy: peekIndex)]</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    private func skipWhiteSpaceAndNewLines() &#123;</span><br><span class="line">        while let character = currentCharacter, CharacterSet.whitespacesAndNewlines.contains(character.unicodeScalars.first!) &#123;</span><br><span class="line">            advance()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 解析器</strong></p>
+<h4 id="YQParser-swift"><a href="#YQParser-swift" class="headerlink" title="YQParser.swift"></a>YQParser.swift</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">class YQParser: NSObject &#123;</span><br><span class="line">    </span><br><span class="line">    private var currentTk: OCToken?</span><br><span class="line">    private var currentLexer: YQLexer?</span><br><span class="line">    </span><br><span class="line">    public func expr(_ input: String) -&gt; Int &#123;</span><br><span class="line">        </span><br><span class="line">        currentLexer = YQLexer(input)</span><br><span class="line">        currentTk = currentLexer?.nextTk()</span><br><span class="line">        </span><br><span class="line">        guard case let .constant(.integer(left)) = currentTk else &#123;</span><br><span class="line">            return 0</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        eat(currentTk)</span><br><span class="line">        let op = currentTk</span><br><span class="line">        eat(currentTk)</span><br><span class="line">        guard case let .constant(.integer(right)) = currentTk else &#123;</span><br><span class="line">            return 0</span><br><span class="line">        &#125;</span><br><span class="line">        eat(currentTk)</span><br><span class="line">        </span><br><span class="line">        if op == .operation(.plus) &#123;</span><br><span class="line">            return left + right</span><br><span class="line">        &#125; else if op == .operation(.minus) &#123;</span><br><span class="line">            return left - right</span><br><span class="line">        &#125; else if op == .operation(.mult) &#123;</span><br><span class="line">            return left * right</span><br><span class="line">        &#125; else if op == .operation(.intDiv) &#123;</span><br><span class="line">            return left / right</span><br><span class="line">        &#125;</span><br><span class="line">        return left + right</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    private func eat(_ token: OCToken?) &#123;</span><br><span class="line">        if let tk = token, currentTk == tk &#123;</span><br><span class="line">            currentTk = currentLexer?.nextTk()</span><br><span class="line">            if currentTk == OCToken.whiteSpaceAndNewLine &#123;</span><br><span class="line">                currentTk = currentLexer?.nextTk()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            fatalError(&quot;Error: eat wrong&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有了这3个基本的类，就可以进行简单的四则运算了,新起一个demo， 引入这3个类, viewController 中写下如下代码:</p>
+<h4 id="ViewController-swift"><a href="#ViewController-swift" class="headerlink" title="ViewController.swift"></a>ViewController.swift</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class ViewController: UIViewController &#123;</span><br><span class="line">    </span><br><span class="line">    override func viewDidLoad() &#123;</span><br><span class="line">        super.viewDidLoad()</span><br><span class="line">        </span><br><span class="line">        let parser = YQParser()</span><br><span class="line">        // 加法</span><br><span class="line">        let result = parser.expr(&quot;8 + 3&quot;)</span><br><span class="line">        print(&quot;加法运算 结果: result = \(result)&quot;)</span><br><span class="line">        // 减法</span><br><span class="line">        let result1 = parser.expr(&quot;8 - 3&quot;)</span><br><span class="line">        print(&quot;减法运算 结果: result = \(result1)&quot;)</span><br><span class="line">        // 乘法</span><br><span class="line">        let result2 = parser.expr(&quot;8 * 3&quot;)</span><br><span class="line">        print(&quot;乘法运算 结果: result = \(result2)&quot;)</span><br><span class="line">        // 除法</span><br><span class="line">        let result3 = parser.expr(&quot;8 / 3&quot;)</span><br><span class="line">        print(&quot;除法运算 结果: result = \(result3)&quot;)</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而得到的结果如下：<br><img src="images/20201210163716.jpg" alt="image"><br>我们可以发现，加法，减法，乘法，都是对的。那为什么除法不对呢？</p>
+<ul>
+<li>那是因为我们只实现了整数的四则运算，浮点数的运算并没有实现。<br>这上面只是展示 <strong>自建解释器</strong> 的基本步骤, 而一个完整的解释器，是需要耗时耗力的工程，枯燥且容易出错的重复性工作。而解决办法就是使用元编程(Meta-programming)。这又是一个系统的课题，这里就不做过多阐述了。</li>
+</ul>
+<p><strong>自建解释器</strong>其实最核心的就是解析代码的 AST(抽象语法树),由于代码量的问题就不做展示了，基本步骤如下图<br><img src="images/20201210174937.jpg" alt="image"></p>
+<p>关于<strong>自建解释器</strong>就讲到这里，下面提供一些自建解释器的工具</p>
+<h3 id="自建解释器便捷工具"><a href="#自建解释器便捷工具" class="headerlink" title="自建解释器便捷工具"></a>自建解释器便捷工具</h3><ul>
+<li>在我调研的很多库中，都使用了<strong>libffi</strong>这个库，这个库是用来做方法调用的，可以完全绕开runtime，也就绕开了被拒的那几个方法。</li>
+<li>自建解释器你第一时间应该想到使用 LLVM，GitHub 上有一个基于 LLVM 的 C++ 解释器 Cling，可以帮助我们学习怎样通过扩展 LLVM 来自制解释器。</li>
+<li>解释器分为解释执行 AST 和解释执行字节码两种，其中 Cling 属于前者，如果你追求解释器的性能，可以先得到代码的汇编代码，然后使用 用 C++ 库实现的 JIT 库 <strong>AsmJit</strong>，这个库完全不依赖外部环境，大小也只有300KB。非常适合用来实现自己的 JIT。使用 AsmJit 库后，我们再自己动手去为字节码编写 JIT 能力的解释器就很容易了。</li>
+<li>如果你还是想完全自建, 有一个著名的库 <strong>Antlr4</strong> 可以帮助你。</li>
+</ul>
+<p>以上内容，就是<strong>iOS热修复方案</strong>的基本内容了，从最简单的js方案到最难的自建，不管是哪一种，其实都需要开发者或公司承担一定的风险，这风险来自–苹果审核部门。相对于风险，实施热修复是否是性价比高的需求呢?</p>
+<ol>
+<li><p>当你被苹果公司审核到使用了热修复方案，首次发现,你当前审核的App将会被拒，并且针对你App所属账号的所有App都将延期一周就行审核，防止你在其它App中也使用相同的方案。第二次被发现，App将被下架，账号被锁。所以，如果要实施热修复方案，你一定得确保你能做到不被苹果审核机制审查到。</p>
+</li>
+<li><p>其实<strong>动态化方案</strong>，对大团队的意义会更加明显。因为大团队一般会根据业务分成若干小团队，由这些不同团队组成的超级大 App 每次发版，都会相互掣肘，而动态化就能够解决不同团队灵活发版的问题，让各个小团队按照自己的节奏来迭代业务。如果没有<strong>动态化的需求</strong>或者<strong>不是一个超级App</strong>，做这方面的事情性价比反而不高。</p>
+</li>
+<li><p>关于<strong>动态化</strong> 在网上持有不一样的理解，比如在中国很多公司对动态化持狂热态度，但是在国外，大家并不是很热衷。在iOS大神戴铭（前滴滴首席技术官）博客中的总结我觉得非常有道理。</p>
+<p> 原文如下:<br> <img src="images/20201219102026.jpg" alt="image"></p>
+</li>
+</ol>
+<p>所以，在iOS领域，相比<strong>动态化</strong>的收益和<strong>使用动态化</strong>所需要承担的风险，在加上，假如采用自建的方式，那更是需要一个更大的团队去做维护。怎么看这笔买卖不是很划算。当然<strong>紧急修复bug</strong>总会在某些时候有出乎意料的作用。所以，我更倾向于做<strong>轻量级的热修复</strong>。</p>
+<p>以上就是我对<strong>热修复方案</strong>的一些思考。方案讲到这里，如果有更多更好的方案，欢迎大家一起讨论研究。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/12/21/API%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8%E6%96%B9%E6%A1%88/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">API接口安全方案</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>&nbsp;-&nbsp;
+            
+            2021&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">yinQiong</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

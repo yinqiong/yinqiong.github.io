@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="yinQiong">
+    
+    <title>
+        
+            封装一个优雅的链式网络请求框架 |
+        
+        YinQiong&#39; GitHub
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                YinQiong&#39; GitHub
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">封装一个优雅的链式网络请求框架</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">yinQiong</span>
+                        
+                            <span class="author-label">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-12-01 02:48:00
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/oc/">oc</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E7%BD%91%E8%B7%AF%E8%AF%B7%E6%B1%82/">网路请求</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h1 id="YQHttp-优雅的链式网络请求库"><a href="#YQHttp-优雅的链式网络请求库" class="headerlink" title="YQHttp - 优雅的链式网络请求库"></a>YQHttp - 优雅的链式网络请求库</h1><ul>
+<li>本库基于 AFWorking4.0.1 及以上版本封装, 采用 <strong>Object-C</strong>编写。</li>
+</ul>
+<p>在开始了解本库前，了解一些基础知识:</p>
+<ul>
+<li><p><strong>面向对象</strong> - 不解释。</p>
+</li>
+<li><p><strong>Object-C 的范型</strong> - OC在<strong>iOS9</strong>的时候， 为了兼容 <strong>swift</strong>体系，加入了浅显的范型。</p>
+<ol>
+<li>范型在类中定义 (&lt;ObjectType&gt;):<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@interface AObject&lt;ObjectType&gt;: NSObject</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></li>
+<li>范型使用:<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSArray&lt;NSString *&gt; *array = @[].mutableCopy;</span><br><span class="line">[array enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">        </span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p><strong>链式编程</strong> - 使用点语法串连使用的编程方法，比较有名的库有 <strong>Masonry</strong> 等；基本结构如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (b (^)(a)) method;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="传统的封装方式"><a href="#传统的封装方式" class="headerlink" title="传统的封装方式"></a>传统的封装方式</h2><p>现在，让我们想一下，开发实战中，发起一次网络请求，我们需要经过几个步骤呢?我以使用<strong>AFNetWorking</strong>列举出来如下:</p>
+<ol>
+<li>创建一个发起请求的对象。</li>
+<li>传入url，参数（parameters），headers等，开始请求。</li>
+<li>请求成功，得到原始的数据， 一般为JSON；或者请求失败，得到错误信息。</li>
+<li>数据转模型（ORM）。请求失败情况下，提取错误信息得到文字信息。</li>
+<li>使用模型。请求失败情况，根据情况选择是否使用错误提示或者deBug。</li>
+</ol>
+<p>使用 <strong>AFNetWorking</strong> 库本身帮我们写好了3步，后两步需要我们自己根据需求来选择是否实现。<strong>AFNetWorking</strong> 使用如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[[AFHTTPSessionManager manager] GET:urlString parameters:parameter headers:headers progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line">    // 请求成功</span><br><span class="line"></span><br><span class="line">    // 200 要怎么样</span><br><span class="line">    // 201 要怎么样</span><br><span class="line">        </span><br><span class="line">&#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line">    // 请求失败</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>看起来是已经够简单了， 描述的也够清晰，但是，这一大串真的不好看，传参都是基本类型，一不小心也很容易出错； 所以一般大家都会对 <strong>AFNetWorking</strong> 进行二次封装。并且传参也会使用模型。上面 4，5 也会一并封装进来。步骤除了上面5步，第2点还要加上：</p>
+<ol>
+<li>请求的参数使用模型，在最后转成基本数据类型，赋予AF。</li>
+</ol>
+<p>对于 <strong>参数模型</strong> 和 <strong>数据模型</strong>，有的人可能会写2个父类， 将公共的属性写在父类中，这是没有问题的，有问题的是不同的属性怎么办？ 采用继承是一种方式，将不同的属性写成基本类型或者是id类型，再ORM一次也是一种方式。两种方式如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// GBArticleParam 父类： GBBaseParam</span><br><span class="line">    GBArticleParam *param = [GBArticleParam param];</span><br><span class="line">    param.offset = offset;</span><br><span class="line">    param.limit = limit;</span><br><span class="line">    param.type = articleType;</span><br><span class="line">    param.method = method;</span><br><span class="line"></span><br><span class="line">    // Http 是 AF的封装</span><br><span class="line">    [Http POST:param.mj_keyValues success:^(BaseModel *baseModel) &#123;</span><br><span class="line">        // 200 处理</span><br><span class="line">        if (baseModel.status = 200) &#123;</span><br><span class="line">            // baseModel.result 是id类型，没有经过ORM 的基本类型</span><br><span class="line">          CustomModel *customModel =  [CustomModel mj_objectWithKeyValues: baseModel.result];</span><br><span class="line"></span><br><span class="line">          // 201 处理</span><br><span class="line">        &#125; else if (baseModel.status = 201) &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125; failure:^(NSError *error) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>你会发现，这代码是越写越长了呢！**{ }** 到处的回调(回调地狱)无言以对啊。</p>
+<h2 id="本库的链式封装"><a href="#本库的链式封装" class="headerlink" title="本库的链式封装"></a>本库的链式封装</h2><p>链式调用的好：语意更清晰，结构明确，调用自由, 避免<strong>回调地狱</strong>。这是本库采用链式封装的原因。</p>
+<p>先介绍下本库的几个类:</p>
+<ol>
+<li>YQHttp - 创建 AFHTTPSessionManager 对象, 传递给 YQHttpRequest。</li>
+<li>YQHttpRequest - 参数合集对象，传递参数给 YQHttpBigen。</li>
+<li>YQHttpBigen - 请求方式选择并发起请求的对象, 请求后将操作给 YQHttpResponse。</li>
+<li>YQHttpResponse - 获取到数据源并解析成模型，并回调。</li>
+<li>YQHttpConst - 常量对象， 写入的常量根据实际情况更改即。</li>
+</ol>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>如果你直接使用本库，写法如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// MYCusomParameter 自定义参数模型</span><br><span class="line">    YQHttpRequest&lt;MYCusomParameter *&gt; *request = [[YQHttpRequest alloc] init];</span><br><span class="line">    // MYCustomModel 你想得到数据模型</span><br><span class="line">    YQHttpResponse&lt;MYCustomModel *&gt; *response = [[YQHttpResponse alloc] init];</span><br><span class="line">    </span><br><span class="line">    // 链式调用</span><br><span class="line">    [[[[YQHttp.request(request) keyValue:^(id  _Nonnull parameters) &#123;</span><br><span class="line">        // 参数模型转 基本数据类型</span><br><span class="line">        return [parameters mj_keyValues];</span><br><span class="line">    </span><br><span class="line">    &#125;].response(response).GET object:^id _Nonnull(Class  _Nonnull __unsafe_unretained cls, NSDictionary * _Nonnull obj) &#123;</span><br><span class="line">        // 得到的 数据源 转 模型</span><br><span class="line">        MYCustomModel *model = [cls mj_objectWithKeyValues:obj];</span><br><span class="line">        return model;</span><br><span class="line">        </span><br><span class="line">    &#125;] sucess:^(MYCustomModel *result) &#123;</span><br><span class="line">        // 成功后回调处理</span><br><span class="line">        </span><br><span class="line">    &#125;] error:^(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error) &#123; // 请求出错误处理</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+<p>不推荐直接使用本库，首先我们要认识到一个问题，不管是传统的封装，还是本库上面的使用，有2个步骤： [parameters mj_keyValues] 和 [cls mj_objectWithKeyValues:obj] 这2个方法有点操作太繁琐(基本一种请求，至少一次这2个方法调用)。这2个方法是 <strong>MJExtension</strong>中字典与模型互相转换的方法。所以在链式中有了 <strong>keyValue:</strong> 和 <strong>object:</strong> 这2条链。 那我们能确定的一件事情是，一个项目中最多也就一个<strong>MJExtension</strong>这样的库就够了（你有2个也可以，也不影响本库的封装）。所以，本库 <strong>YQHttpRequest</strong> 和 <strong>YQHttpResponse</strong> 都提供了重写的方法来让你二次封装本库。只需要在子类中重写以下方法:</p>
+<h4 id="YQHttpRequest"><a href="#YQHttpRequest" class="headerlink" title="YQHttpRequest"></a>YQHttpRequest</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/// 子类可以重写这个方法 来给 parameters 赋值参数模型转后的字典</span><br><span class="line">/// @param parameters 请求参数模型</span><br><span class="line">- (id)keyValueOfParameters:(id)parameters;</span><br></pre></td></tr></table></figure>
+<h4 id="YQHttpResponse"><a href="#YQHttpResponse" class="headerlink" title="YQHttpResponse"></a>YQHttpResponse</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/// 子类可以重写这个方法，避免每一个请求都要调用</span><br><span class="line">/// object: 或者 objectArray: 方法</span><br><span class="line">/// @param cls ObjectType 类</span><br><span class="line">/// @param result 数据源</span><br><span class="line">- (void)objectAtClass:(Class)cls result:(id)result</span><br></pre></td></tr></table></figure>
+
+<p>重写如下:</p>
+<h4 id="YQHttpCustomRequest"><a href="#YQHttpCustomRequest" class="headerlink" title="YQHttpCustomRequest"></a>YQHttpCustomRequest</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (id)keyValueOfParameters:(id)parameters &#123;</span><br><span class="line">    return [parameters mj_keyValues];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="YQHttpCustomResponse"><a href="#YQHttpCustomResponse" class="headerlink" title="YQHttpCustomResponse"></a>YQHttpCustomResponse</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (void)objectAtClass:(Class)cls result:(id)result &#123;</span><br><span class="line">    </span><br><span class="line">    if ([result isKindOfClass:[NSDictionary class]]) &#123;</span><br><span class="line">        </span><br><span class="line">        self.result = [cls mj_objectWithKeyValues:result];</span><br><span class="line">        </span><br><span class="line">    &#125; else if ([result isKindOfClass:[NSArray class]]) &#123;</span><br><span class="line">        </span><br><span class="line">        self.result = [cls mj_objectArrayWithKeyValuesArray:result];</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后你使用你自定义的 <strong>YQHttpCustomRequest</strong> 和 <strong>YQHttpCustomResponse</strong> 子类,来使用本库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/// 用范型明确知道你参数是哪个模型</span><br><span class="line">YQHttpCustomRequest&lt;MYCusomParameter *&gt; *request = [[YQHttpCustomRequest alloc] init];</span><br><span class="line">///  request.paramerter = ··· // 自己定义的参数模型 MYCusomParameter 实例</span><br><span class="line">/// 用范型明确知道你数据模型类</span><br><span class="line">YQHttpCustomResponse&lt;MYCustomModel *&gt; *response = [[YQHttpCustomResponse alloc] init];</span><br><span class="line"></span><br><span class="line">// 链式请求</span><br><span class="line">[[YQHttp.request(request).response(response).POST sucess:^(id  _Nonnull result) &#123;</span><br><span class="line"></span><br><span class="line">    // 200 处理</span><br><span class="line">    // 如果201 处理也可以再自定义 201 的链式</span><br><span class="line">        </span><br><span class="line">&#125;] error:^(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error) &#123;</span><br><span class="line">    // 错误处理</span><br><span class="line">        </span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>这就是最优雅的，最面向对象的链式用法。</p>
+<h2 id="几处注意点"><a href="#几处注意点" class="headerlink" title="几处注意点"></a>几处注意点</h2><ol>
+<li><p><strong>sucess:^(id  _Nonnull result) {···}</strong> 这里不知道是不是系统的机制问题(可能也是我机制理解没到位),你根据智能提示打出来的 是id 类型，但是我们知道 NSArray 的范型 是可以智能提示打出来正确的类型的，影响不大，手动将<strong>id</strong>改成<strong>response范型指定的类型</strong>就行。在调用时候其实也告诉了你正确类型</p>
+<p> <img src="images/20201127174734.jpg" alt="image"></p>
+</li>
+<li><p>子类化 <strong>YQHttpRequest</strong> 和 <strong>YQHttpResponse</strong> 注意范型，如下:</p>
+<p> <img src="images/20201127175139.jpg" alt="image"></p>
+<p> 不这么写，那response.result 第一张图那样的提示 还是 id 类型。</p>
+</li>
+<li><p>给 <strong>YQHttpRequest</strong> 和 <strong>YQHttpResponse</strong> 写扩展重写那2个方法也是可以的吧（自己没试了）!</p>
+</li>
+<li><p>为什么 <strong>YQHttpResponse</strong> 中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, assign) NSInteger code;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) ObjectType result;</span><br></pre></td></tr></table></figure>
+<p>居然敢写死这2个属性，万一状态码后台给你定义成 status字段， 数据 给你定义成 dadada（乱写的）字段，你还能自如的数据转模型吗？针对这个问题所以有了 <strong>YQHttpConst</strong>这个类</p>
+<p>YQHttpConst.m</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSString const *kYQCodeMap = @&quot;status&quot;;</span><br><span class="line">NSString * const kYQSucessCodeValueMap = @&quot;200&quot;;</span><br><span class="line">NSString const *kYQResultMap = @&quot;result&quot;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>kYQCodeMap</strong> 和 <strong>kYQResultMap</strong> 值写成你后台对应的字段就是了，<strong>kYQSucessCodeValueMap</strong> 不给改，别问，问就是不会。</p>
+</li>
+</ol>
+<h2 id="关于-YQHttp-的介绍就到这里，更详细的心得和需求就期待以后在实践中积累吧！"><a href="#关于-YQHttp-的介绍就到这里，更详细的心得和需求就期待以后在实践中积累吧！" class="headerlink" title="关于 YQHttp 的介绍就到这里，更详细的心得和需求就期待以后在实践中积累吧！"></a>关于 <strong>YQHttp</strong> 的介绍就到这里，更详细的心得和需求就期待以后在实践中积累吧！</h2><p><a class="link"   target="_blank" rel="noopener" href="https://github.com/yinqiong/YQHttp" >本库开源gitHub地址<i class="fas fa-external-link-alt"></i></a></p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/12/18/iOS%E7%BB%84%E4%BB%B6%E5%8C%96%E6%96%B9%E6%A1%88/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">iOS组件化方案</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/11/25/%E5%88%A9%E7%94%A8CoreText%E6%89%93%E9%80%A0%E5%9B%BE%E6%96%87%E6%B7%B7%E6%8E%92%E5%BC%95%E6%93%8E/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">利用CoreText打造图文混排引擎</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>&nbsp;-&nbsp;
+            
+            2021&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">yinQiong</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

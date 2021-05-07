@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="yinQiong">
+    
+    <title>
+        
+            利用CoreText打造图文混排引擎 |
+        
+        YinQiong&#39; GitHub
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                YinQiong&#39; GitHub
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">利用CoreText打造图文混排引擎</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">yinQiong</span>
+                        
+                            <span class="author-label">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-11-25 08:37:00
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/oc/">oc</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%9B%BE%E6%96%87%E6%B7%B7%E6%8E%92/">图文混排</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h1 id="CoreText"><a href="#CoreText" class="headerlink" title="CoreText"></a><em>CoreText</em></h1><h2 id="什么是CoreText"><a href="#什么是CoreText" class="headerlink" title="什么是CoreText?"></a>什么是<em>CoreText</em>?</h2><p>   在官网上，关于coreText的开头描述就一句话</p>
+<ul>
+<li>Create text layouts, optimize font handling, and access font metrics and glyph data.</li>
+</ul>
+<p>翻译过来就是<strong>创建文本布局，优化字体处理，并访问字体指标和字形数据</strong>。</p>
+<h2 id="图文混排基本原理"><a href="#图文混排基本原理" class="headerlink" title="图文混排基本原理"></a>图文混排基本原理</h2><p>CoreText是底层的API，它使用了许多C的函数；与Core Graphics配合使用，就可以自定义自己的图文混排引擎了。CoreText负责文本绘制，给图片留出占位位置，然后 Core Graphics 绘制图片。</p>
+<h2 id="CoreText绘制基本步骤"><a href="#CoreText绘制基本步骤" class="headerlink" title="CoreText绘制基本步骤"></a><em>CoreText</em>绘制基本步骤</h2><p>CoreText绘制基本是在view中drawRect:(CGRect)rect方法中进行的,假如我新建一个 <strong>YQdisplayView</strong>类，那基本操作如下:</p>
+<h3 id="YQdisplayView-m"><a href="#YQdisplayView-m" class="headerlink" title="YQdisplayView.m"></a>YQdisplayView.m</h3> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">  - (void)drawRect:(CGRect)rect &#123;</span><br><span class="line">    [super drawRect:rect];</span><br><span class="line">    </span><br><span class="line">    /// 1. 得到当前绘制画布的上下文</span><br><span class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</span><br><span class="line">    </span><br><span class="line">    /// 2. 坐标系反转，对于底层的绘制引擎来说，屏幕的左下角是(0,0)坐标。</span><br><span class="line">    /// 而对于上层的UIKit来说，左上角才是（0，0）坐标；所以为了符合UIKit</span><br><span class="line">    /// 的坐标描述, 这里需要做坐标反转操作。</span><br><span class="line">    CGContextSetTextMatrix(context, CGAffineTransformIdentity);</span><br><span class="line">    CGContextTranslateCTM(context, 0, self.bounds.size.height);</span><br><span class="line">    CGContextScaleCTM(context, 1.0, -1.0);</span><br><span class="line">    </span><br><span class="line">    /// 3. 创建绘制区域</span><br><span class="line">    CGMutablePathRef path = CGPathCreateMutable();</span><br><span class="line">    CGPathAddRect(path, NULL, self.bounds);</span><br><span class="line">    </span><br><span class="line">    /// 4. 绘制内容</span><br><span class="line">    NSAttributedString *attStr = [[NSAttributedString alloc] initWithString:@&quot;卧槽，hello， word！&quot;];</span><br><span class="line">    /// 5. 获取到CTFrameRef 对象</span><br><span class="line">    CTFramesetterRef frameSetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attStr);</span><br><span class="line">    CFRange range = CFRangeMake(0, [attStr length]);</span><br><span class="line">    CTFrameRef frame = CTFramesetterCreateFrame(frameSetter, range, path, attStr, NULL);</span><br><span class="line">    </span><br><span class="line">    /// 6. c函数，手动管理内存</span><br><span class="line">    CFRelease(frame);</span><br><span class="line">    CFRelease(path);</span><br><span class="line">    CFRelease(frameSetter);</span><br><span class="line"></span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>这样一个简单的排版引擎就做好了。</p>
+<h2 id="实现一个复杂的图文混排引擎"><a href="#实现一个复杂的图文混排引擎" class="headerlink" title="实现一个复杂的图文混排引擎"></a>实现一个复杂的图文混排引擎</h2><p>但是现实的开发环境，往往是<strong>文字显示是多姿多彩的(比如五彩斑斓的黑体，工正整齐的狂草体)<strong>， 任性的</strong>文字中间插入图片</strong>的， 所以要想实现一个复杂的<strong>图文混排</strong>， 需要从多方面入手。</p>
+<h3 id="单一原则架构"><a href="#单一原则架构" class="headerlink" title="单一原则架构"></a>单一原则架构</h3><p>对于一个复杂的排版引擎来说，可以将其功能拆分成以下几个类:</p>
+<ol>
+<li>一个用于显示的类，仅负责显示内容，不负责排版。</li>
+<li>一个模型类，用于承载显示所需要的所有数据。</li>
+<li>一个排版类，用于实现文字内容的排版。</li>
+<li>一个配制类，用于实现一些排版时的可配制项。</li>
+</ol>
+<h3 id="UBB排版模版"><a href="#UBB排版模版" class="headerlink" title="UBB排版模版"></a>UBB排版模版</h3><p>实际的开发中， 一般像需要复杂的图文混排，数据都是通过后台下发的，前端来解析；步知刷题App行测题目就是应用的类似排版，如下：<br><img src="images/20201124094401.jpg" alt="avatar"></p>
+<h3 id="CTRunDelegate的作用"><a href="#CTRunDelegate的作用" class="headerlink" title="CTRunDelegate的作用"></a>CTRunDelegate的作用</h3><p>CoreText的绘制是依赖一个CTFrame的实例，这个实例内部的组成如下:<br><img src="images/20201124102329.jpg" alt="avatar"><br>每一个CTFrame 由多个 <strong>CTLine</strong> 组成，每个 CTLine 代表一行，每个 CTLine 又由 <strong>CTRun</strong> 组成, 每一个 CTRun 代表一组显示风格一致的文本, 我们不用手工管理 CTLine 和 CTRun的创建过程; 但是，CTRun可以设置<strong>CTRunDelegate</strong>来制定该文本在绘制时的高度，宽度，排列对其方式等信息。而<strong>绘制图片</strong>, 其实是用一个特殊的空白字符<strong>0xFFFC</strong>, 同时设置该字符的CTRunDelegate的宽高信息为图片的宽高，这样就给图片留出了空白位置，最后用 CGContentDrawImage 方法绘制出图片。 </p>
+<p>依照上面描述，复杂的图文混排应该有5个类:</p>
+<ol>
+<li><p><strong>CTFrameParserConfig</strong> - 配制类, 如下:</p>
+<h4 id="CTFrameParserConfig-h"><a href="#CTFrameParserConfig-h" class="headerlink" title="CTFrameParserConfig.h"></a>CTFrameParserConfig.h</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">@interface CTFrameParserConfig : NSObject</span><br><span class="line"></span><br><span class="line">/// 字体大小</span><br><span class="line">@property (nonatomic, assign) CGFloat fontSize;</span><br><span class="line"></span><br><span class="line">/// 字体名，没有默认就是 ArialMT</span><br><span class="line">@property (nonatomic, copy) NSString *fontName;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) CGFloat lineSpace;</span><br><span class="line">/// 默认 是 黑色 black</span><br><span class="line">@property (nonatomic, assign) UIColor *textColor;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> image</span><br><span class="line"> </span><br><span class="line"> */</span><br><span class="line">/// x</span><br><span class="line">@property (nonatomic, assign) CGFloat x;</span><br><span class="line"></span><br><span class="line">/// y</span><br><span class="line">@property (nonatomic, assign) CGFloat y;</span><br><span class="line"></span><br><span class="line">/// 宽度</span><br><span class="line">@property (nonatomic, assign) CGFloat width;</span><br><span class="line"></span><br><span class="line">/// 高度</span><br><span class="line">@property (nonatomic, assign) CGFloat height;</span><br><span class="line"></span><br><span class="line">/// 生成一段文字的富文本属性字典</span><br><span class="line">- (NSDictionary *)createDictionary;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h4 id="CTFrameParserConfig-m"><a href="#CTFrameParserConfig-m" class="headerlink" title="CTFrameParserConfig.m"></a>CTFrameParserConfig.m</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">@implementation CTFrameParserConfig</span><br><span class="line"></span><br><span class="line">- (CGFloat)fontSize &#123;</span><br><span class="line">    if (!_fontSize) &#123;</span><br><span class="line">        _fontSize = 14;</span><br><span class="line">    &#125;</span><br><span class="line">    return _fontSize;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CGFloat)lineSpace &#123;</span><br><span class="line">    if (!_lineSpace) &#123;</span><br><span class="line">        _lineSpace = 5;</span><br><span class="line">    &#125;</span><br><span class="line">    return _lineSpace;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (NSString *)fontName &#123;</span><br><span class="line">    if (!_fontName) &#123;</span><br><span class="line">        _fontName = @&quot;ArialMT&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    return _fontName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIColor *)textColor &#123;</span><br><span class="line">    if (!_textColor) &#123;</span><br><span class="line">        _textColor = [UIColor blackColor];</span><br><span class="line">    &#125;</span><br><span class="line">    return _textColor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (NSDictionary *)createDictionary &#123;</span><br><span class="line">    CGFloat fontSize = self.fontSize;</span><br><span class="line">    CGFloat lineSpacing = self.lineSpace;</span><br><span class="line">    CFStringRef fontName = (__bridge CFStringRef)self.fontName;</span><br><span class="line">    CTFontRef fontRef = CTFontCreateWithName(fontName, fontSize, NULL);</span><br><span class="line">    const CFIndex kNumberOfSettings = 3;</span><br><span class="line">    /// CTParagraphStyle 段落样式定义</span><br><span class="line">    CTParagraphStyleSetting theSettings[kNumberOfSettings] = &#123;</span><br><span class="line">        /// 行距调整</span><br><span class="line">        &#123; kCTParagraphStyleSpecifierLineSpacingAdjustment, sizeof(CGFloat), &amp;lineSpacing&#125;,</span><br><span class="line">        /// 最大行距</span><br><span class="line">        &#123; kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(CGFloat), &amp;lineSpacing&#125;,</span><br><span class="line">        /// 最小行距</span><br><span class="line">        &#123; kCTParagraphStyleSpecifierMinimumLineSpacing, sizeof(CGFloat), &amp;lineSpacing&#125;</span><br><span class="line">        </span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    CTParagraphStyleRef paragraphRef = CTParagraphStyleCreate(theSettings, kNumberOfSettings);</span><br><span class="line">    </span><br><span class="line">    // 颜色</span><br><span class="line">    UIColor *textColor = self.textColor;</span><br><span class="line">    NSMutableDictionary *dict = [NSMutableDictionary dictionary];</span><br><span class="line">    dict[(id)kCTForegroundColorAttributeName] = (id)textColor.CGColor;</span><br><span class="line">    dict[(id)kCTFontAttributeName] = (__bridge id)fontRef;</span><br><span class="line">    dict[(id)kCTParagraphStyleAttributeName] = (__bridge id)paragraphRef;</span><br><span class="line">    </span><br><span class="line">    CFRelease(paragraphRef);</span><br><span class="line">    CFRelease(fontRef);</span><br><span class="line">    return dict;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>YQTextRunDelegate</strong> - CTRunDelegate代理类，获取图片宽高信息,如下：</p>
+<h4 id="YQTextRunDelegate-h"><a href="#YQTextRunDelegate-h" class="headerlink" title="YQTextRunDelegate.h"></a>YQTextRunDelegate.h</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@interface YQTextRunDelegate : NSObject&lt;NSCopying, NSCoding&gt;</span><br><span class="line"></span><br><span class="line">- (nullable CTRunDelegateRef)CTRunDelegate CF_RETURNS_RETAINED;</span><br><span class="line"></span><br><span class="line">@property (nonatomic) CGFloat ascent;</span><br><span class="line"></span><br><span class="line">@property (nonatomic) CGFloat descent;</span><br><span class="line"></span><br><span class="line">@property (nonatomic) CGFloat width;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h4 id="YQTextRunDelegate-m"><a href="#YQTextRunDelegate-m" class="headerlink" title="YQTextRunDelegate.m"></a>YQTextRunDelegate.m</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">static void DeallocCallback(void *ref) &#123;</span><br><span class="line">    YQTextRunDelegate *self = (__bridge_transfer YQTextRunDelegate *)(ref);</span><br><span class="line">    self = nil; // release</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static CGFloat GetAscentCallback(void *ref) &#123;</span><br><span class="line">    YQTextRunDelegate *self = (__bridge YQTextRunDelegate *)(ref);</span><br><span class="line">    return self.ascent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static CGFloat GetDecentCallback(void *ref) &#123;</span><br><span class="line">    YQTextRunDelegate *self = (__bridge YQTextRunDelegate *)(ref);</span><br><span class="line">    return self.descent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static CGFloat GetWidthCallback(void *ref) &#123;</span><br><span class="line">    YQTextRunDelegate *self = (__bridge YQTextRunDelegate *)(ref);</span><br><span class="line">    return self.width;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@implementation YQTextRunDelegate</span><br><span class="line"></span><br><span class="line">- (CTRunDelegateRef)CTRunDelegate CF_RETURNS_RETAINED &#123;</span><br><span class="line">    CTRunDelegateCallbacks callbacks;</span><br><span class="line">    callbacks.version = kCTRunDelegateCurrentVersion;</span><br><span class="line">    callbacks.dealloc = DeallocCallback;</span><br><span class="line">    callbacks.getAscent = GetAscentCallback;</span><br><span class="line">    callbacks.getDescent = GetDecentCallback;</span><br><span class="line">    callbacks.getWidth = GetWidthCallback;</span><br><span class="line">    return CTRunDelegateCreate(&amp;callbacks, (__bridge_retained void *)(self.copy));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)encodeWithCoder:(NSCoder *)aCoder &#123;</span><br><span class="line">    [aCoder encodeObject:@(_ascent) forKey:@&quot;ascent&quot;];</span><br><span class="line">    [aCoder encodeObject:@(_descent) forKey:@&quot;descent&quot;];</span><br><span class="line">    [aCoder encodeObject:@(_width) forKey:@&quot;width&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)initWithCoder:(NSCoder *)aDecoder &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    _ascent = ((NSNumber *)[aDecoder decodeObjectForKey:@&quot;ascent&quot;]).floatValue;</span><br><span class="line">    _descent = ((NSNumber *)[aDecoder decodeObjectForKey:@&quot;descent&quot;]).floatValue;</span><br><span class="line">    _width = ((NSNumber *)[aDecoder decodeObjectForKey:@&quot;width&quot;]).floatValue;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    typeof(self) one = [self.class new];</span><br><span class="line">    one.ascent = self.ascent;</span><br><span class="line">    one.descent = self.descent;</span><br><span class="line">    one.width = self.width;</span><br><span class="line">    return one;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>CoreTextAttriModel</strong> - 子模型类，文字数据最小单元，如下：</p>
+<h4 id="CoreTextAttriModel-h"><a href="#CoreTextAttriModel-h" class="headerlink" title="CoreTextAttriModel.h"></a>CoreTextAttriModel.h</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSUInteger, CoreTextContentType) &#123;</span><br><span class="line">    CoreTextContentTypeText = 0, // 文字</span><br><span class="line">    CoreTextContentTypeImageURL, // 图片url</span><br><span class="line">    CoreTextContentTypeMatch, // latex 公式</span><br><span class="line">    CoreTextContentTypeLink, // link 链接</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">@interface CoreTextAttriModel : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) CoreTextContentType type;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *content;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) CTFrameParserConfig *config;</span><br><span class="line"></span><br><span class="line">/// 生成富文本</span><br><span class="line">- (NSAttributedString *)createAttributedString;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h4 id="CoreTextAttriModel-m"><a href="#CoreTextAttriModel-m" class="headerlink" title="CoreTextAttriModel.m"></a>CoreTextAttriModel.m</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">- (NSAttributedString *)createAttributedString &#123;</span><br><span class="line">    if (!_content) &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSDictionary *dict = [_config createDictionary];</span><br><span class="line">    NSString *content = [self contentAtType];</span><br><span class="line">    NSAttributedString *attriText;</span><br><span class="line">    if (_type == CoreTextContentTypeImageURL || _type == CoreTextContentTypeMatch) &#123;</span><br><span class="line">        attriText = [self createImagePlaceAttriWithContent:content dictionary:dict];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        attriText = [[NSAttributedString alloc] initWithString:content attributes:dict];</span><br><span class="line">    &#125;</span><br><span class="line">    return attriText;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)contentAtType &#123;</span><br><span class="line">    NSString *content;</span><br><span class="line">    switch (_type) &#123;</span><br><span class="line">        case CoreTextContentTypeText:</span><br><span class="line">           content = _content;</span><br><span class="line">            break;</span><br><span class="line">        case CoreTextContentTypeImageURL:</span><br><span class="line">           content = [self emptyPlaceString];</span><br><span class="line">            break;</span><br><span class="line">        case CoreTextContentTypeMatch:</span><br><span class="line">           content = [self emptyPlaceString];</span><br><span class="line">            break;</span><br><span class="line">        case CoreTextContentTypeLink:</span><br><span class="line">           content = _content;</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        default:</span><br><span class="line">            content = _content;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    return content;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSAttributedString *)createImagePlaceAttriWithContent:(NSString *)content dictionary:(NSDictionary *)dict &#123;</span><br><span class="line">    </span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">    YQTextRunDelegate *delegate = [YQTextRunDelegate new];</span><br><span class="line">    delegate.width = _config.width;</span><br><span class="line">    delegate.ascent = _config.height;</span><br><span class="line">    delegate.descent = 0;</span><br><span class="line">    </span><br><span class="line">    CTRunDelegateRef delegateRef = [delegate CTRunDelegate];</span><br><span class="line">  </span><br><span class="line">    NSMutableAttributedString *attriText = [[NSMutableAttributedString alloc] initWithString:content attributes:dict];</span><br><span class="line">    CFAttributedStringSetAttribute((CFMutableAttributedStringRef)attriText, CFRangeMake(0, 1), kCTRunDelegateAttributeName, delegateRef);</span><br><span class="line">    CFRelease(delegateRef);</span><br><span class="line">    </span><br><span class="line">    return attriText;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)emptyPlaceString &#123;</span><br><span class="line">    </span><br><span class="line">    unichar replaceChar = 0xFFFC;</span><br><span class="line">    NSString *content = [NSString stringWithCharacters:&amp;replaceChar length:1];</span><br><span class="line">    return content;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>CTFrameParser</strong> - 用于生成最后绘制界面需要的CTFrameRef实例， 包含在CoreTextData中。示例如下: </p>
+<h4 id="CTFrameParser-h"><a href="#CTFrameParser-h" class="headerlink" title="CTFrameParser.h"></a>CTFrameParser.h</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@interface CTFrameParser : NSObject</span><br><span class="line"></span><br><span class="line">/// 生成一段文字的富文本属性字典</span><br><span class="line">/// @param config 配置</span><br><span class="line">+ (NSDictionary *)attriWithConfig:(CTFrameParserConfig *)config;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/// 生成一段文字的所有数据</span><br><span class="line">/// @param content 文字</span><br><span class="line">/// @param config 配置</span><br><span class="line">+ (CoreTextData *)parseContent:(NSAttributedString *)content config:(CTFrameParserConfig *)config;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="CTFrameParser-m"><a href="#CTFrameParser-m" class="headerlink" title="CTFrameParser.m"></a>CTFrameParser.m</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">@implementation CTFrameParser</span><br><span class="line"></span><br><span class="line">+ (CoreTextData *)parseAttriModels:(NSArray&lt;CoreTextAttriModel *&gt; *)attriModels width:(CGFloat)width &#123;</span><br><span class="line">    NSAttributedString *attriText = [self attributeTextWithAttriModels:attriModels];</span><br><span class="line">    CoreTextData *data = [self parseContent:attriText width:width];</span><br><span class="line">    data.attriModels = attriModels.copy;</span><br><span class="line">    </span><br><span class="line">    return data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (NSAttributedString *)attributeTextWithAttriModels:(NSArray&lt;CoreTextAttriModel *&gt; *)attriModels &#123;</span><br><span class="line">    if (!attriModels.count) &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    __block NSMutableAttributedString *attriText = [[NSMutableAttributedString alloc] init];</span><br><span class="line">    [attriModels enumerateObjectsUsingBlock:^(CoreTextAttriModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">        NSAttributedString *objAttriText = [obj createAttributedString];</span><br><span class="line">        [attriText appendAttributedString:objAttriText];</span><br><span class="line">    &#125;];</span><br><span class="line">    return attriText;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">+ (CoreTextData *)parseContent:(NSAttributedString *)content width:(CGFloat)width &#123;</span><br><span class="line">    if (!content) &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    // 创建CTFrameSetter</span><br><span class="line">    CTFramesetterRef frameSetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)content);</span><br><span class="line">  </span><br><span class="line">    // 获得要绘制的区域的高度</span><br><span class="line">    CGSize size = CGSizeMake(width, CGFLOAT_MAX);</span><br><span class="line">    CGSize coreTextSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 0), nil, size, nil);</span><br><span class="line">    CGFloat textHeight = coreTextSize.height;</span><br><span class="line">    </span><br><span class="line">    // 生成CTFrameRef实例</span><br><span class="line">    CTFrameRef frame = [self createFrameRefWithFramesetter:frameSetter width:width height:textHeight];</span><br><span class="line">    </span><br><span class="line">    // 将生成好的CTFrameRef 保存到coreTextData实例当中</span><br><span class="line">    CoreTextData *data = [[CoreTextData alloc] init];</span><br><span class="line">    data.frameRef = frame;</span><br><span class="line">    </span><br><span class="line">    data.width = width;</span><br><span class="line">    data.height = textHeight;</span><br><span class="line">    </span><br><span class="line">    // 释放内存</span><br><span class="line">    CFRelease(frame);</span><br><span class="line">    CFRelease(frameSetter);</span><br><span class="line">    </span><br><span class="line">    return data;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (CTFrameRef)createFrameRefWithFramesetter:(CTFramesetterRef)frameSetter width:(CGFloat)width height:(CGFloat)height &#123;</span><br><span class="line">    CGMutablePathRef path = CGPathCreateMutable();</span><br><span class="line">    CGPathAddRect(path, NULL, CGRectMake(0, 0, width, height));</span><br><span class="line">    </span><br><span class="line">    CTFrameRef frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(0, 0), path, NULL);</span><br><span class="line">    CFRelease(path);</span><br><span class="line">    return frame;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li><strong>CoreTextData</strong> - 存储所有数据的总类, 获取图片绘制区域也在这个类中<h4 id="CoreTextData-h"><a href="#CoreTextData-h" class="headerlink" title="CoreTextData.h"></a>CoreTextData.h</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@interface CoreTextData : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) CTFrameRef frameRef;</span><br><span class="line"></span><br><span class="line">/// 分段文字数据数组</span><br><span class="line">@property (nonatomic, strong) NSArray&lt;CoreTextAttriModel *&gt; *attriModels;</span><br><span class="line"></span><br><span class="line">/// 图片类附件</span><br><span class="line">@property (nonatomic, strong) NSMutableArray&lt;UIImageView *&gt; *imageViewAttachment;</span><br><span class="line"></span><br><span class="line">/// 绘制区域总宽度</span><br><span class="line">@property (nonatomic, assign) CGFloat width;</span><br><span class="line"></span><br><span class="line">/// 绘制区域总高度</span><br><span class="line">@property (nonatomic, assign) CGFloat height;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="CoreTextData-m"><a href="#CoreTextData-m" class="headerlink" title="CoreTextData.m"></a>CoreTextData.m</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">- (void)dealloc &#123;</span><br><span class="line">    if (_frameRef != nil) &#123;</span><br><span class="line">        CFRelease(_frameRef);</span><br><span class="line">        _frameRef = nil;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/// 手动管理frameRef内存</span><br><span class="line">/// @param frameRef frameRef description</span><br><span class="line">- (void)setFrameRef:(CTFrameRef)frameRef &#123;</span><br><span class="line">    if (_frameRef != frameRef) &#123;</span><br><span class="line">        if (_frameRef != nil) &#123;</span><br><span class="line">            CFRelease(_frameRef);</span><br><span class="line">        &#125;</span><br><span class="line">        CFRetain(frameRef);</span><br><span class="line">        _frameRef = frameRef;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setAttriModels:(NSArray&lt;CoreTextAttriModel *&gt; *)attriModels &#123;</span><br><span class="line">    _attriModels = attriModels;</span><br><span class="line">    // 适配图片</span><br><span class="line">    [self fillImagePosition];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)fillImagePosition &#123;</span><br><span class="line">    </span><br><span class="line">    NSPredicate *predicate = [NSPredicate predicateWithFormat:@&quot;type=%d&quot;, CoreTextContentTypeImageURL];</span><br><span class="line">    // 得到所有的图片</span><br><span class="line">    NSArray&lt;CoreTextAttriModel *&gt; *result = [_attriModels filteredArrayUsingPredicate:predicate];</span><br><span class="line">    if (!result.count) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 生成附件</span><br><span class="line">    _imageViewAttachment = @[].mutableCopy;</span><br><span class="line">    </span><br><span class="line">    NSArray *lines = (NSArray *)CTFrameGetLines(self.frameRef);</span><br><span class="line">    int lineCount = (int)[lines count];</span><br><span class="line">    CGPoint lineOrigins[lineCount];</span><br><span class="line">    CTFrameGetLineOrigins(self.frameRef, CFRangeMake(0, 0), lineOrigins);</span><br><span class="line">    int imgIndex = 0;</span><br><span class="line">    </span><br><span class="line">    CoreTextAttriModel *attriModel = result[imgIndex];</span><br><span class="line">    </span><br><span class="line">    // 遍历 CTLine</span><br><span class="line">    for (int i = 0; i &lt; lineCount; ++i) &#123;</span><br><span class="line">        CTLineRef line = (__bridge CTLineRef)lines[i];</span><br><span class="line">        NSArray *runObjArray = (NSArray *)CTLineGetGlyphRuns(line);</span><br><span class="line">        </span><br><span class="line">        // 遍历 CTRun</span><br><span class="line">        for (id runObj in runObjArray) &#123;</span><br><span class="line">            </span><br><span class="line">            CTRunRef run = (__bridge CTRunRef)runObj;</span><br><span class="line">            // 获得CTRun的属性</span><br><span class="line">            NSDictionary *runAttributes = (NSDictionary *)CTRunGetAttributes(run);</span><br><span class="line">            // 获取代理</span><br><span class="line">            CTRunDelegateRef delegate = (__bridge CTRunDelegateRef)[runAttributes valueForKey:(id)kCTRunDelegateAttributeName];</span><br><span class="line">            if (delegate == nil) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            NSDictionary *metaDic = CTRunDelegateGetRefCon(delegate);</span><br><span class="line">            if (![metaDic isKindOfClass:[NSDictionary class]]) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            CGRect runBounds;</span><br><span class="line">            CGFloat ascent;</span><br><span class="line">            CGFloat descent;</span><br><span class="line">            runBounds.size.width = CTRunGetTypographicBounds(run, CFRangeMake(0, 0), &amp;ascent, &amp;descent, NULL);</span><br><span class="line">            runBounds.size.height = ascent + descent;</span><br><span class="line">            CGFloat xOffset = CTLineGetOffsetForStringIndex(line, CTRunGetStringRange(run).location, NULL);</span><br><span class="line">            runBounds.origin.x = lineOrigins[i].x + xOffset;</span><br><span class="line">            runBounds.origin.y = lineOrigins[i].y;</span><br><span class="line">            runBounds.origin.y -= descent;</span><br><span class="line">            </span><br><span class="line">            CGPathRef pathRef = CTFrameGetPath(self.frameRef);</span><br><span class="line">            CGRect colRect = CGPathGetBoundingBox(pathRef);</span><br><span class="line">            </span><br><span class="line">            CGRect delegateBounds = CGRectOffset(runBounds, colRect.origin.x, colRect.origin.y);</span><br><span class="line">            attriModel.config.x = delegateBounds.origin.x;</span><br><span class="line">            attriModel.config.y = delegateBounds.origin.y;</span><br><span class="line">            attriModel.config.width = delegateBounds.size.width;</span><br><span class="line">            attriModel.config.height = delegateBounds.size.height;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            imgIndex ++;</span><br><span class="line">            if (imgIndex == result.count) &#123;</span><br><span class="line">                attriModel = nil;</span><br><span class="line">                break;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                attriModel = result[imgIndex];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li><strong>YQdisplayView</strong>， 负责显示, 如下:<h4 id="YQdisplayView-h"><a href="#YQdisplayView-h" class="headerlink" title="YQdisplayView.h"></a>YQdisplayView.h</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@interface YQdisplayView : UIView</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) CoreTextData *data;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h4 id="YQdisplayView-m-1"><a href="#YQdisplayView-m-1" class="headerlink" title="YQdisplayView.m"></a>YQdisplayView.m</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@implementation YQdisplayView</span><br><span class="line"></span><br><span class="line">- (void)drawRect:(CGRect)rect &#123;</span><br><span class="line">    [super drawRect:rect];</span><br><span class="line">    </span><br><span class="line">    if (self.data) &#123; // CoreTextData</span><br><span class="line">        </span><br><span class="line">        /// 1. 得到当前绘制画布的上下文</span><br><span class="line">        CGContextRef context = UIGraphicsGetCurrentContext();</span><br><span class="line">        </span><br><span class="line">        /// 2. 坐标系反转，对于底层的绘制引擎来说，屏幕的左下角是(0,0)坐标。</span><br><span class="line">        /// 而对于上层的UIKit来说，左上角才是（0，0）坐标；所以为了符合UIKit</span><br><span class="line">        /// 的坐标描述, 这里需要做坐标反转操作。</span><br><span class="line">        CGContextSetTextMatrix(context, CGAffineTransformIdentity);</span><br><span class="line">        CGContextTranslateCTM(context, 0, self.bounds.size.height);</span><br><span class="line">        CGContextScaleCTM(context, 1.0, -1.0);</span><br><span class="line">        </span><br><span class="line">        /// 3. 绘制</span><br><span class="line">        CTFrameDraw(self.data.frameRef, context);</span><br><span class="line"></span><br><span class="line">        /// 图片是采取控件显示，还是绘制取决于需求</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="一些答疑"><a href="#一些答疑" class="headerlink" title="一些答疑"></a>一些答疑</h3><h4 id="有人会有疑问-为什么CoreTextData中需要获取到绘制区域的高度呀"><a href="#有人会有疑问-为什么CoreTextData中需要获取到绘制区域的高度呀" class="headerlink" title="有人会有疑问 为什么CoreTextData中需要获取到绘制区域的高度呀?"></a>有人会有疑问 <strong>为什么CoreTextData中需要获取到绘制区域的高度呀?</strong></h4><ul>
+<li>这是因为实际应用场景中，我们需要事先知道所显示内容的高度,之后才可以进行绘制。比如UITableView中,就需要知道需要渲染的cell的高度。<h4 id="有人说为啥要设计-CoreTextAttriModel-这一层？后台可能不会这么给我们这样格式的呀-是不是最后只需要一个NSAttributedString就可以了？"><a href="#有人说为啥要设计-CoreTextAttriModel-这一层？后台可能不会这么给我们这样格式的呀-是不是最后只需要一个NSAttributedString就可以了？" class="headerlink" title="有人说为啥要设计 CoreTextAttriModel 这一层？后台可能不会这么给我们这样格式的呀?是不是最后只需要一个NSAttributedString就可以了？"></a>有人说<strong>为啥要设计 CoreTextAttriModel 这一层？后台可能不会这么给我们这样格式的呀?是不是最后只需要一个NSAttributedString就可以了？</strong></h4></li>
+<li>这是一个思路，如果后台不这样给数据，总体上还是要这样去设计，因为上面例子中，只列举了图片和文字如何显示，如果加上交互（点击，滑动，拖拽）等，你需要知道你每一个子元素的位置，基本上一个子元素对应的就是一个 CoreTextAttriModel。在一些有名的CoreText三方库，比如<strong>YYText</strong>这个库中，设计的更加复杂；也就有更高的自由度用来满足需求。</li>
+</ul>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/12/01/%E4%BC%98%E9%9B%85%E7%9A%84%E9%93%BE%E5%BC%8F%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%A1%86%E6%9E%B6/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">封装一个优雅的链式网络请求框架</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/11/25/%E5%85%8DSDK%E8%B0%83%E7%94%A8%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98%E5%92%8C%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%AF%E4%BB%98/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">免SDK调用微信支付和支付宝支付实现</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>&nbsp;-&nbsp;
+            
+            2021&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">yinQiong</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

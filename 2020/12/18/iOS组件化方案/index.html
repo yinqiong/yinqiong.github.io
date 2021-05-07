@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="yinQiong">
+    
+    <title>
+        
+            iOS组件化方案 |
+        
+        YinQiong&#39; GitHub
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                YinQiong&#39; GitHub
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">iOS组件化方案</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">yinQiong</span>
+                        
+                            <span class="author-label">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-12-18 03:19:00
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/oc-swift/">oc/swift</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">工程化</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h3 id="什么是组件化"><a href="#什么是组件化" class="headerlink" title="什么是组件化"></a>什么是组件化</h3><p>组件化是一种能够解决代码耦合的技术，将一个工程分解成一个个的独立单元并且每一个单元能够单独编译运行，然后按照某种方式任意组织成为一个拥有完整业务逻辑的工程。这就是<strong>组件化</strong>。</p>
+<h3 id="为什么需要组件化"><a href="#为什么需要组件化" class="headerlink" title="为什么需要组件化"></a>为什么需要组件化</h3><p>随着公司业务的不断发展，项目的功能越来越复杂，各个业务代码耦合越来越多，代码量急剧增加，传统的 MVC 或者 MVVM 架构已经无法高效的管理工程代码，这个时候就需要组件化。项目经过组件化的拆分，不仅可以解决代码耦合的问题，还可以增强代码的复用性，工程的易管理性等。</p>
+<h3 id="在什么时候做组件化呢"><a href="#在什么时候做组件化呢" class="headerlink" title="在什么时候做组件化呢?"></a>在什么时候做组件化呢?</h3><ul>
+<li>项目管理：项目的业务线超过 2 条以上，需要独立拆分。</li>
+<li>人员管理：过多人对同一块代码的进行修改，产生 bug 的可能性上升，所以需要重新分配人员和其维护的功能。</li>
+<li>测试维度：随着项目的业务量增大，很难做单元测试。每个小功能修改，都需要对 App 进行测试，严重增加测试工作量。</li>
+</ul>
+<p>当 App 业务之间交叉耦合，bug 率难以下降，测试每天做大量重复工作。开发人员之间修改相互影响时，你需要考虑进行组件化。</p>
+<p>组件化是项目架构层面的技术，不是所有项目都适合组件化，组件化一般针对的是大中型的项目，并且是多人开发。如果，项目比较小，开发人员比较少，确实不太适合组件化，因为这时的组件化可能带来的不是便捷，而是增加了开发的工作量。另外，组件化过程也要考虑团队的情况，总之，根据目前项目的情况作出最合适的技术选型。</p>
+<h3 id="组件化的几种方案"><a href="#组件化的几种方案" class="headerlink" title="组件化的几种方案"></a>组件化的几种方案</h3><p>组件化大致上分为三种方案：<a href="">url-block</a>、<a href="">url-controller</a>、<a href="">target-action</a></p>
+<h3 id="组件化过程"><a href="#组件化过程" class="headerlink" title="组件化过程"></a>组件化过程</h3><p><strong>url-block</strong>: <a href="">MGJRouter</a></p>
+<p>架构图如下<br><img src="images/20201218100302.jpg" alt="image"><br>使用分为2个部分，注册和调用</p>
+<p>注册:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[MGJRouter registerURLPattern:@&quot;YaoTiA://www.shakebuzhi.com?id=:id&quot; </span><br><span class="line">                    toHandler:^(NSDictionary * routerParameters) &#123;</span><br><span class="line">    NSNumber *id = routerParameters[@&quot;id&quot;];</span><br><span class="line">    // create view controller with id. push view controller</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>调用:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[MGJRouter openURL:@&quot;YaoTiA://://detail?id=404&quot;]</span><br></pre></td></tr></table></figure>
+<p>使用 url-block 的方案的确可以组件间解耦，但是还是存在其它明显的问题，比如：</p>
+<ul>
+<li>需要在内存中维护 url-block 的表，组件多了可能会有内存问题；</li>
+<li>url 的参数传递受到限制，只能传递常规的字符串参数，无法传递非常规参数，如 UIImage、NSData 等类型；</li>
+<li>没有区分本地调用和远程调用的情况，尤其是远程调用会因为 url 参数受限，导致一些功能受限；</li>
+<li> 组件本身依赖了中间件，且分散注册使的耦合较多</li>
+</ul>
+<p><strong>url-controller</strong>： <a href="">LDBusMediator</a></p>
+<p>它是通过组件实现公共协议的接口，来对外提供服务<br>就是通过单例来维护 url-controller 的映射关系表，根据调用者的 url，以及提供的参数（字典类型，所以参数类型不受约束）来返回对应的 controller 来提供服务；同时，为了增强组件提供服务的多样性，又通过服务协议定义了其它的服务。整体来看，LDBusMediator 解决了蘑菇街的这两种组件化方案的不足，比如：通过注册封装件 connector 而不是 block 来降低了内存占用；通过字典传递参数，解决了 url 参数的限制性。但是，由于使用了 connector 来提供服务而不是组件本身，把 connector 作为组件的一部分，依然有组件依赖中间件的问题。</p>
+<p>架构图如下:<br><img src="images/20201218110528.jpg" alt="image"></p>
+<p>其实步知刷题APP的iOS端的url跳转也是url-controller的思路，只是去掉了单例和容器，而采用了键值对的方式，何况那时候，步知刷题App并没有做组件化，只是单纯做跳转。因轻量的需求反而避开了引入更高的复杂度，也算意外收获。</p>
+<p><strong>target-action</strong>：<a href="">CTMediator</a></p>
+<p>target-action 的方案是通过给组件包装一层 wrapper 来给外界提供服务，然后调用者通过依赖中间件来使用服务；其中，中间件是通过 runtime 来调用组件的服务，是真正意义上的解耦，也是该方案最核心的地方。具体实施过程是给组件封装一层 target 对象来对外提供服务，不会对原来组件造成入侵；然后，通过实现中间件的 category 来提供服务给调用者，这样使用者只需要依赖中间件，而组件则不需要依赖中间件。</p>
+<p>架构图如下:</p>
+<p><img src="images/20201218144720.jpg" alt="image"><br>从架构图中看，如果ModuleA作为target，ModuleB 是 action的话，他们2个组件并没有互相耦合，而是分别是ModuleA_wrapper和ModeleB_wrapper在交互，而ModuleA只持有对应CTMediator_Category,这样CTMediator自身也不参与业务实现解藕。</p>
+<p>在步知刷题开始做组件化时，项目基本是已经大成阶段。如果组件化本身又耦合进业务中，那除了徒增复杂度外，组件化难度也将加大。所以步知刷题开始做组件化时，采用的就是 CTMediator。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (UIViewController *)CTMediator_viewControllerForDetail &#123;</span><br><span class="line">    return [self performTarget:kCTMediatorTargetA </span><br><span class="line">                        action:kCTMediatorActionNativFetchDetailViewController </span><br><span class="line">                        params:@&#123; @&quot;key&quot; : @&quot;value&quot; &#125;</span><br><span class="line">             shouldCacheTarget:NO];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>target-action 方案有个问题就是在中间件的 category 里有 hardcode，casa 的解释是在组件间调用时，最好是去 model 化，所以不可避免的引入了 hardcode，并且所有的 hardcode 只存在于分类中。</p>
+<p>针对这个问题，有人提议把所有的 model 做成组件化下沉，然后让所有的组件都可以自由的访问 model。这种方案虽然解决了组件间传递 model 的依赖问题，但是为了解决这个问题，直接把整个 model 层组件化后暴露给所有组件，容易造成数据泄露，付出的代价有点大。</p>
+<p>针对这个问题，多数实践者，一致觉得组件间调用时用字典传递数据，组件内调用时用 model 传递数据，这样既减少组件间数据对 model 的耦合，又方便了组件内使用 model 传递数据的便捷性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (UIViewController *)CTMediator_viewControllerForDetail:(NSDictionary *)dict</span><br><span class="line">&#123;</span><br><span class="line">    return [self performTarget:kCTMediatorTargetA                         </span><br><span class="line">                        action:kCTMediatorActionNativFetchDetailViewController</span><br><span class="line">                        params:dict</span><br><span class="line">             shouldCacheTarget:NO];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>hardCode</p>
+<ol>
+<li>官方解释：将可变变量用一个固定值来代替的方法。用这种方法编译后，如果以后需要更改此变量就非常困难了。</li>
+<li>hard code 是指“硬编码”，即将数据直接写在代码中。也就是，在程序中直接给变量赋值。指的是在软件实现上，把输出或输入的相关参数（例如：路径、输出的形式、格式）直接硬编码在源代码中，而非在运行时期由外界指定的设置、资源、数据、或者格式做出适当回应。</li>
+<li>hard code 的双重性：<ol>
+<li>直接将数据填写在源代码中，数据发生变化时，并不利于数据的修改，会造成程序的质量降低；</li>
+<li>保护一些数据，直接赋值，避免其发生变化。</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="组件化实施的方式"><a href="#组件化实施的方式" class="headerlink" title="组件化实施的方式"></a>组件化实施的方式</h3><p>组件化可以利用 git 的源代码管理工具的便利性来实施，具体就是建立一个项目工程的私有化仓库，然后把各个组件的 podspec 上传到私有仓库，在需要用到组件时，直接从仓库里面取。</p>
+<ol>
+<li>壳工程</li>
+</ol>
+<ul>
+<li>main</li>
+<li>AppDelegate</li>
+<li>config</li>
+<li>pods</li>
+</ul>
+<ol start="2">
+<li>封装三方库和基础UI库</li>
+</ol>
+<ul>
+<li>在具体的项目开发过程中，我们常会用到三方库和自己封装的 UI 库，我们可以把这些库封装成组件，然后在项目里用 pod 进行管理。其中，针对三方库，最好再封装一层，使我们的项目部直接依赖三方库，方便后续开发过程中的更换。</li>
+</ul>
+<ol start="3">
+<li>独立业务模块化</li>
+</ol>
+<ul>
+<li>在开发过程中，对一些独立的模块，如：登录模块、账户模块等等，也可以封装成组件，因为这些组件是项目强依赖的，调用的频次比较多。另外，在拆分组件化的过程中，拆分的粒度要合适，尽量做到组件的独立性。同时，组件化是一个渐进的过程，不可能把一个完整的工程一下子全部组件化，要分步进行，通过不停的迭代，来最终实现项目的组件化。</li>
+</ul>
+<ol start="4">
+<li>服务接口最小化</li>
+</ol>
+<ul>
+<li>在前两步都完成的情况下，我们可以根据组件被调用的需求来抽象出组件对外的最小化接口。这时，就可以选择具体应用哪种组件化方案来实施组件化了。</li>
+<li>公共组件：<ul>
+<li>埋点组件</li>
+<li>Common 组件（聚合工具类）</li>
+<li>启动组件</li>
+<li>性能监控组件</li>
+<li>定位组件</li>
+<li>图片处理组件</li>
+<li>UIKit/Foundation 封装和扩展组件</li>
+<li>网络请求组件</li>
+<li>持久化组件</li>
+<li>三方分享组件</li>
+<li>推送组件</li>
+<li>…</li>
+<li>..</li>
+<li>.</li>
+</ul>
+</li>
+</ul>
+<p>在步知刷题中，已经有一些二方库封装，也提供了 CTMediator 的 category，如果在新项目中还是需要做组件化，我推荐 CTMediator， 这个库整体代码量不到 200行，体积非常小。第二，这个库对swift的支持也非常友好。</p>
+<p>是否实施组件化，除了评估项目的大小之外，还和团队成员的多少，业务生命周期长短，工程复杂度有关。需要做到的是能尽量的解耦合，所以需要实施组件化的话，我还是首推 <a href="">CTMediator</a>。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/12/18/YYText%E4%BD%BF%E7%94%A8%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">YYText使用避坑指南</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/12/01/%E4%BC%98%E9%9B%85%E7%9A%84%E9%93%BE%E5%BC%8F%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%A1%86%E6%9E%B6/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">封装一个优雅的链式网络请求框架</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>&nbsp;-&nbsp;
+            
+            2021&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">yinQiong</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>
